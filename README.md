@@ -20,6 +20,7 @@ Mengatur interface pada setiap uml :  ```nano /etc/network/interfaces  ```
 <img src="dhcp/Picture6.png" width="400" height="300">
 
 Mengatur interface pada uml client agar tidak menggunakan konfigurasi IP Statis :
+
 <img src="dhcp/Picture7.png" width="400" height="300">
 <img src="dhcp/Picture8.png" width="400" height="300">
 <img src="dhcp/Picture9.png" width="400" height="300">
