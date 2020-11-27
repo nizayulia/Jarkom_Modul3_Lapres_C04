@@ -148,6 +148,8 @@ deny_info monta.if.its.ac.id BLACKLISTS
 - Restart squid: `service squid restart`
 - Kemudian buka browser dan ketikkan `google.com` maka akan diredirect ke `monta.if.ac.id`.
 
+![alt text](https://github.com/nizayulia/Jarkom_Modul3_Lapres_C04/blob/main/proxy/proxy_squid_10_2.png?raw=true)
+
 #### 11. Untuk menandakan bahwa Proxy Server ini adalah Proxy yang dibuat oleh Anri, Bu Meguri meminta Anri untuk mengubah error page default squid.
 
 - Unduh file error dengan mengetikkan `wget 10.151.36.202/ERR_ACCESS_DENIED`
