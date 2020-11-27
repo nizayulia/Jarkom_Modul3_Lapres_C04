@@ -70,3 +70,118 @@ Pada konfigurasi terlihat pada default-lease-time pada subnet 1 adalah 300 detik
 
 <img src="dhcp/Picture19.png" width="450" height="400">
 
+#### 7.	Akses ke proxy hanya bisa dilakukan oleh Anri sendiri sebagai user TA. User autentikasi milik Anri memiliki format:
+
+``` 
+User : userta_c04
+Password : inipassw0rdta_c04 
+```
+
+
+- Pastikan pada UML Mojokerto sudah terinstall `squid` dan `apache2-utils`. Lalu ketikkan:
+- Buat user dan password baru dengan mengetikkan:
+
+```
+htpasswd -c /etc/squid/passwd userta_c04
+```
+
+Ketikkan password yang diinginkan, yaitu `inipassw0rdta_c04 `. Jika sudah makan akan muncul notifikasi.
+
+- Edit konfigurasi squid pada `/etc/squid/squid.conf` menjadi:
+
+![alt text](https://github.com/nizayulia/Jarkom_Modul3_Lapres_C04/blob/main/proxy/proxy_squid_7.JPG?raw=true)
+
+- Restart squid: `service squid restart`
+- Ubah pengaturan proxy browser (di sini saya menggunakan firefox). Gunakan IP MOJOKERTO : `10.151.77.43` sebagai host dan isikan port `8080`.
+
+![alt text](https://github.com/nizayulia/Jarkom_Modul3_Lapres_C04/blob/main/proxy/proxy_squid_7_0.png?raw=true)
+
+- Kemudian buka browser, akan muncul pop up login:
+
+![alt text](https://github.com/nizayulia/Jarkom_Modul3_Lapres_C04/blob/main/proxy/proxy_squid_7_1.png?raw=true)
+
+
+#### 8. Anri sudah menjadwal pengerjaan TA-nya setiap hari Selasa-Rabu pukul 13.00-18.00. 
+
+- Edit konfigurasi squid pada `/etc/squid/squid.conf`, tambahkan :
+```
+acl AVAILABLE_WORKING time TW 13:00-18:00
+```
+Maknanya Anri hanya dapat mengakses internet di hari Selasa-Rabu pukul 13.00-18.00. 
+- Selain itu, edit konfigurasi menjadi:
+
+![alt text](https://github.com/nizayulia/Jarkom_Modul3_Lapres_C04/blob/main/proxy/proxy_squid_8.JPG?raw=true)
+
+- Restart squid: `service squid restart`
+- Kemudian buka browser. Akan muncul halaman error jika mengakses di luar waktu yang ditentukan.
+
+#### 9. Jadwal bimbingan dengan Bu Meguri adalah setiap hari Selasa-Kamis pukul 21.00 - 09.00 keesokan harinya (sampai Jumat jam 09.00). 
+
+- Edit konfigurasi squid pada `/etc/squid/squid.conf`, tambahkan :
+```
+acl BIMBINGAN time TWH 21:00-23:59
+acl BIMBINGAN time WHF 00:00-09:00
+```
+
+Selain dapat mengakses internet pada waktu yang telah ditentukan, Anri juga bisa mengakses internet saat ada jadwal bimbingan dengan Bu Meguri, yaitu  hari Selasa-Kamis pukul 21.00 - 09.00 keesokan harinya.
+
+- Selain itu, edit konfigurasi menjadi:
+
+![alt text](https://github.com/nizayulia/Jarkom_Modul3_Lapres_C04/blob/main/proxy/proxy_squid_9.JPG?raw=true)
+
+- Restart squid: `service squid restart`
+- Kemudian buka browser. Akan muncul halaman error jika mengakses di luar waktu yang ditentukan.
+
+#### 10. Agar Anri bisa fokus mengerjakan TA, setiap dia mengakses google.com, maka akan di redirect menuju monta.if.its.ac.id agar Anri selalu ingat untuk mengerjakan TA🙂.
+
+- Edit konfigurasi squid pada `/etc/squid/squid.conf`, tambahkan :
+```
+acl BLACKLISTS dstdomain .google.com
+http_access deny BLACKLISTS
+deny_info monta.if.its.ac.id BLACKLISTS
+```
+
+- Konfigurasi squid menjadi:
+
+![alt text](https://github.com/nizayulia/Jarkom_Modul3_Lapres_C04/blob/main/proxy/proxy_squid_10_1.JPG?raw=true)
+
+- Restart squid: `service squid restart`
+- Kemudian buka browser dan ketikkan `google.com` maka akan diredirect ke `monta.if.ac.id`.
+
+#### 11. Untuk menandakan bahwa Proxy Server ini adalah Proxy yang dibuat oleh Anri, Bu Meguri meminta Anri untuk mengubah error page default squid.
+
+- Unduh file error dengan mengetikkan `wget 10.151.36.202/ERR_ACCESS_DENIED`
+- Copy file tersebut ke `/usr/share/squid/errors/English/`
+- Restart squid: `service squid restart`
+- Kemudian buka browser. Akan muncul halaman error yang terbaru jika mengakses di luar waktu yang ditentukan.
+
+![alt text](https://github.com/nizayulia/Jarkom_Modul3_Lapres_C04/blob/main/proxy/proxy_squid_11.png?raw=true)
+
+#### 12. Karena Bu Meguri dan Anri adalah tipe orang pelupa, maka untuk memudahkan mereka, Anri memiliki ide ketika menggunakan proxy cukup dengan mengetikkan domain janganlupa-ta.c04.pw dan memasukkan port 8080. 
+
+- Pastikan pada UML Malang telah terinstall `bind9`.
+- Buka file : `nano /etc/bind/named.conf.local`.
+- Isikan konfigurasi domain `janganlupa-ta.c04.pw`, sesuai dengan syntax berikut:
+```
+zone "janganlupa-ta.c04.pw" {
+	type master;
+	file "/etc/bind/jarkom/janganlupa-ta.c04.pw";
+};
+```
+
+![alt text](https://github.com/nizayulia/Jarkom_Modul3_Lapres_C04/blob/main/proxy/dns_server_1.JPG?raw=true)
+
+- Buat folder jarkom di dalam /etc/bind : `mkdir /etc/bind/jarkom`
+- Copykan file db.local pada path /etc/bind ke dalam folder jarkom yang baru saja dibuat dan ubah namanya menjadi janganlupa-ta.c04.pw : `cp /etc/bind/db.local /etc/bind/jarkom/janganlupa-ta.c04.pw`
+- Kemudian buka file janganlupa-ta.c04.pw dan edit seperti gambar berikut dengan IP MOJOKERTO: `nano /etc/bind/jarkom/janganlupa-ta.c04.pw` 
+
+![alt text](https://github.com/nizayulia/Jarkom_Modul3_Lapres_C04/blob/main/proxy/dns_server_2.JPG?raw=true)
+
+- Restart bind9 : `service bind9 restart`
+- Lakukan setting proxy pada browser (di sini saya menggunakan firefox). Gunakan domain : `janganlupa-ta.c04.pw` sebagai host dan isikan port `8080`.
+
+![alt text](https://github.com/nizayulia/Jarkom_Modul3_Lapres_C04/blob/main/proxy/proxy_squid_12.png?raw=true)
+
+- Pop up log in setelah host proxy diubah:
+
+![alt text](https://github.com/nizayulia/Jarkom_Modul3_Lapres_C04/blob/main/proxy/proxy_squid_12_1.png?raw=true)
